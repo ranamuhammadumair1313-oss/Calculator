@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rana Muhammad Umair - Premium Sound Calculator</title>
+    <style>
+        /* Modern Dark Animated Background */
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a1a1a, #000000);
+            background-size: 200% 200%;
+            animation: moveBg 12s ease infinite;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        @keyframes moveBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Calculator Frame */
+        .calculator {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 25px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.8);
+            width: 320px;
+        }
+
+        /* Screen Display */
+        #display {
+            width: 100%;
+            height: 75px;
+            font-size: 38px;
+            text-align: right;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #00ff88; /* Neon Green Font */
+            outline: none;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* User Name Styling (Now Below Calculator) */
+        .user-name {
+            font-size: 26px;
+            font-weight: bold;
+            margin-top: 25px; /* Calculator se niche gap */
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow: 0 0 10px #00f2ff, 0 0 20px rgba(0, 242, 255, 0.5);
+        }
+
+        /* Buttons Layout */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            height: 60px;
+            font-size: 22px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: scale(0.92);
+            background: #00f2ff; /* Press effect color */
+            color: black;
+        }
+
+        .operator { color: #f39c12; font-weight: bold; }
+        .equals { background: linear-gradient(135deg, #007bff, #0056b3); grid-column: span 2; }
+        .clear { background: rgba(231, 76, 60, 0.2); color: #e74c3c; grid-column: span 2; border: 1px solid rgba(231, 76, 60, 0.3); }
+        .clear:hover { background: #e74c3c; color: white; }
+
+        .hint {
+            margin-top: 10px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Calculator Pehle -->
+    <div class="calculator">
+        <input type="text" id="display" readonly placeholder="0">
+
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">AC</button>
+            <button class="operator" onclick="appendToDisplay('/')">÷</button>
+            <button class="operator" onclick="appendToDisplay('*')">×</button>
+            
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('-')">−</button>
+            
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
+            
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="equals" onclick="calculateResult()">=</button>
+            
+            <button onclick="appendToDisplay('0')" style="grid-column: span 2;">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+        </div>
+    </div>
+
+    <!-- Aapka Naam Ab Niche Hai -->
+    <div class="user-name">Rana Muhammad Umair</div>
+    
+    <div class="hint">KEYBOARD & SOUND ENABLED</div>
+
+    <script>
+        const display = document.getElementById('display');
+
+        // Click Sound (Modern Digital Click)
+        const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+
+        function playSound() {
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        function appendToDisplay(input) {
+            playSound();
+            if (display.value === "Error") display.value = "";
+            display.value += input;
+        }
+
+        function clearDisplay() {
+            playSound();
+            display.value = "";
+        }
+
+        function calculateResult() {
+            playSound();
+            try {
+                if (display.value !== "") {
+                    // Result calculate karna
+                    display.value = eval(display.value.replace('×', '*').replace('÷', '/'));
+                }
+            } catch (e) {
+                display.value = "Error";
+                setTimeout(clearDisplay, 1000);
+            }
+        }
+
+        // Keyboard Support Logic
+        window.addEventListener('keydown', (e) => {
+            const key = e.key;
+            if (/[0-9]/.test(key) || ['+', '-', '*', '/', '.'].includes(key)) {
+                appendToDisplay(key);
+            } else if (key === 'Enter') {
+                e.preventDefault();
+                calculateResult();
+            } else if (key === 'Backspace') {
+                playSound();
+                display.value = display.value.slice(0, -1);
+            } else if (key === 'Escape') {
+                clearDisplay();
+            }
+        });
+    </script>
+</body>
+</html>
